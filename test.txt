@@ -1,5 +1,2 @@
-update student
-set a="1123",
-	c="d34",
-	D=FF,
-	a123 = v123
+update student 
+set h = "update" where id = -23344
