@@ -1,2 +1,3 @@
 update student 
-set h = "update" where id = -23344
+set h = "update" 
+where id >= 2

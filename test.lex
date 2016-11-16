@@ -1,3 +1,4 @@
+%option yylineno
 %start QUOTE_STATE
 RESERVED_WORD (UPDATE|SET|WHERE|NULL|DEFAULT|NOT)
 QUOTE \"[^"]+\"
@@ -6,22 +7,19 @@ SEPARATOR [ \t]*
 ID [a-z_][a-z_0-9]*
 PUNCT [\.,\?!;:]
 NUMBER [-]*[0-9]+
-%{
-   void yyerror (char const *s) {
-   fprintf (stderr, "%s\n", s);
-   } 	
-%}
+OPERATOR [+\-*/]
+REL_OPERATOR (<>|<|>|<=|>=)
 %%
 {NEW_LINE}      printf("\n");
 {QUOTE}			printf("STRING ");
 {RESERVED_WORD}	printf("%s ", yytext);
 {NUMBER}		printf("NUMBER ");
 {ID} 			printf("ID ");
+{OPERATOR}		printf("OPERATOR ");
+{REL_OPERATOR}	printf("REL ");
 {SEPARATOR}		;
 =				printf("= ");
-. 				{
-					yyerror(yytext);
-				}
+. 				fprintf (stderr, "Error in line %d. Unrecognized token %s\n", yylineno, yytext);
 %%
 int main(int argc, char* argv[]) {
   ++argv, --argc;  /* skip over program name */
