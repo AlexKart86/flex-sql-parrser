@@ -1,11 +1,11 @@
-%option yylineno
+%option yylineno caseless
 %start QUOTE_STATE
 RESERVED_WORD (UPDATE|SET|WHERE|NULL|DEFAULT|NOT)
 QUOTE \"[^"]+\"
 NEW_LINE [\n\r]*
 SEPARATOR [ \t]*
 ID [a-z_][a-z_0-9]*
-PUNCT [\.,\?!;:]
+PUNCT [\.\?!;:]
 NUMBER [-]*[0-9]+
 OPERATOR [+\-*/]
 REL_OPERATOR (<>|<|>|<=|>=)
@@ -18,6 +18,8 @@ REL_OPERATOR (<>|<|>|<=|>=)
 {OPERATOR}		printf("OPERATOR ");
 {REL_OPERATOR}	printf("REL ");
 {SEPARATOR}		;
+{PUNCT}			;
+,				printf(", ");
 =				printf("= ");
 . 				fprintf (stderr, "Error in line %d. Unrecognized token %s\n", yylineno, yytext);
 %%
