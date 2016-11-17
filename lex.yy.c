@@ -526,7 +526,20 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "test.lex"
 
-#line 530 "lex.yy.c"
+#line 13 "test.lex"
+  #include <stdarg.h>
+  #define KRED  "\x1B[31m"	
+  #define KNRM  "\x1B[0m"
+  int brackets_count = 0; 
+  void show_error(char *msg, ...){
+	va_list arg;
+	va_start(arg, msg);
+	fprintf(stderr, "%sLex Error in line %d. %s", KRED, yylineno, KNRM);
+	vfprintf(stderr, msg, arg);  
+	fprintf(stderr, "\n");
+	YYABORT;
+  }
+#line 543 "lex.yy.c"
 
 #define INITIAL 0
 #define QUOTE_STATE 1
@@ -745,9 +758,9 @@ YY_DECL
 		}
 
 	{
-#line 12 "test.lex"
+#line 26 "test.lex"
 
-#line 751 "lex.yy.c"
+#line 764 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -817,89 +830,98 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 13 "test.lex"
+#line 27 "test.lex"
 printf("\n");
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 14 "test.lex"
+#line 28 "test.lex"
 printf("STRING ");
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 15 "test.lex"
+#line 29 "test.lex"
 printf("%s ", yytext);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 16 "test.lex"
+#line 30 "test.lex"
 printf("NUMBER ");
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 17 "test.lex"
+#line 31 "test.lex"
 printf("ID ");
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 18 "test.lex"
+#line 32 "test.lex"
 printf("OPERATOR ");
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 19 "test.lex"
+#line 33 "test.lex"
 printf("REL ");
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 20 "test.lex"
+#line 34 "test.lex"
 ;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 21 "test.lex"
+#line 35 "test.lex"
 ;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 22 "test.lex"
+#line 36 "test.lex"
 printf(", ");
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 23 "test.lex"
+#line 37 "test.lex"
 printf("= ");
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 24 "test.lex"
-printf(") ");
+#line 38 "test.lex"
+{
+	              --brackets_count;
+				  if (brackets_count < 0)				  
+					  show_error("Unclosed bracket");			  
+				  printf(") ");
+				 
+				}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 25 "test.lex"
-printf("( ");
+#line 45 "test.lex"
+{
+					printf("( ");
+					++brackets_count;
+				}
 	YY_BREAK
 case 14:
 *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 26 "test.lex"
-fprintf(stderr, "Error in line %d. Unterminated string constant");
+#line 49 "test.lex"
+show_error("Unterminated string constant %s", yytext);
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 27 "test.lex"
-fprintf (stderr, "Error in line %d. Unrecognized token %s\n", yylineno, yytext);
+#line 50 "test.lex"
+show_error("Unrecognized token %s", yytext);
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 28 "test.lex"
+#line 52 "test.lex"
 ECHO;
 	YY_BREAK
-#line 903 "lex.yy.c"
+#line 925 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(QUOTE_STATE):
 	yyterminate();
@@ -1913,7 +1935,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 28 "test.lex"
+#line 52 "test.lex"
 
 
 int main(int argc, char* argv[]) {

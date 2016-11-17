@@ -20,7 +20,6 @@ REL_OPERATOR (<>|<|>|<=|>=)
 	fprintf(stderr, "%sLex Error in line %d. %s", KRED, yylineno, KNRM);
 	vfprintf(stderr, msg, arg);  
 	fprintf(stderr, "\n");
-	YYABORT;
   }
 %}
 %%
