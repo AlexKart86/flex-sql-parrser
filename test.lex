@@ -21,6 +21,9 @@ REL_OPERATOR (<>|<|>|<=|>=)
 {PUNCT}			;
 ,				printf(", ");
 =				printf("= ");
+\)				printf(") ");
+\(				printf("( ");
+\"[^\"\n]*$		fprintf(stderr, "Error in line %d. Unterminated string constant");
 . 				fprintf (stderr, "Error in line %d. Unrecognized token %s\n", yylineno, yytext);
 %%
 int main(int argc, char* argv[]) {

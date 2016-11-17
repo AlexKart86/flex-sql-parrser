@@ -1,0 +1,3 @@
+update ID 
+set ID = STRING 
+where ID REL ( NUMBER OPERATOR NUMBER ) 
