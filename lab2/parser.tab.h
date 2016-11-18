@@ -34,7 +34,7 @@
 # define YY_YY_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -48,14 +48,17 @@ extern int yydebug;
     UPDATE = 258,
     SET = 259,
     WHERE = 260,
-    NULL = 261,
+    N_ULL = 261,
     DEFAULT = 262,
     NOT = 263,
     STRING = 264,
     NUMBER = 265,
     ID = 266,
     OPERATOR = 267,
-    REL = 268
+    REL = 268,
+    LEX_ERROR = 269,
+    AND = 270,
+    OR = 271
   };
 #endif
 

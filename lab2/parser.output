@@ -1,0 +1,622 @@
+Граматика
+
+    0 $accept: root $end
+
+    1 root: UPDATE table SET assigment_list
+    2     | UPDATE table SET assigment_list WHERE condition
+    3     | UPDATE table SET assigment_list WHERE condition LEX_ERROR
+    4     | UPDATE table SET assigment_list LEX_ERROR
+    5     | LEX_ERROR
+
+    6 assigment: field_name '=' value
+
+    7 assigment_list: assigment
+    8               | assigment_list ',' assigment
+
+    9 value: STRING
+   10      | number_expression
+   11      | N_ULL
+   12      | DEFAULT
+
+   13 field_value: value
+   14            | field_name
+
+   15 number_expression: number_factor
+   16                  | '(' number_factor ')'
+
+   17 number_factor: NUMBER
+   18              | NUMBER OPERATOR number_expression
+
+   19 condition: condition_factor
+   20          | '(' condition_factor ')'
+
+   21 rel_set: REL
+   22        | '='
+
+   23 condition_factor: predicate
+   24                 | NOT predicate
+   25                 | predicate rel_operator condition
+   26                 | NOT predicate rel_operator condition
+
+   27 predicate: field_value rel_set field_value
+
+   28 field_name: ID
+
+   29 table: ID
+
+   30 rel_operator: AND
+   31             | OR
+
+
+Термінальні символи з правилами, у яких вони з'являються
+
+$end (0) 0
+'(' (40) 16 20
+')' (41) 16 20
+',' (44) 8
+'=' (61) 6 22
+error (256)
+UPDATE (258) 1 2 3 4
+SET (259) 1 2 3 4
+WHERE (260) 2 3
+N_ULL (261) 11
+DEFAULT (262) 12
+NOT (263) 24 26
+STRING (264) 9
+NUMBER (265) 17 18
+ID (266) 28 29
+OPERATOR (267) 18
+REL (268) 21
+LEX_ERROR (269) 3 4 5
+AND (270) 30
+OR (271) 31
+
+
+Нетермінальні символи з правилами, у яких вони з'являються
+
+$accept (21)
+    ліворуч: 0
+root (22)
+    ліворуч: 1 2 3 4 5, праворуч: 0
+assigment (23)
+    ліворуч: 6, праворуч: 7 8
+assigment_list (24)
+    ліворуч: 7 8, праворуч: 1 2 3 4 8
+value (25)
+    ліворуч: 9 10 11 12, праворуч: 6 13
+field_value (26)
+    ліворуч: 13 14, праворуч: 27
+number_expression (27)
+    ліворуч: 15 16, праворуч: 10 18
+number_factor (28)
+    ліворуч: 17 18, праворуч: 15 16
+condition (29)
+    ліворуч: 19 20, праворуч: 2 3 25 26
+rel_set (30)
+    ліворуч: 21 22, праворуч: 27
+condition_factor (31)
+    ліворуч: 23 24 25 26, праворуч: 19 20
+predicate (32)
+    ліворуч: 27, праворуч: 23 24 25 26
+field_name (33)
+    ліворуч: 28, праворуч: 6 14
+table (34)
+    ліворуч: 29, праворуч: 1 2 3 4
+rel_operator (35)
+    ліворуч: 30 31, праворуч: 25 26
+
+
+Стан 0
+
+    0 $accept: . root $end
+
+    UPDATE     зсув, та перехід у стан 1
+    LEX_ERROR  зсув, та перехід у стан 2
+
+    root  перехід у стан 3
+
+
+Стан 1
+
+    1 root: UPDATE . table SET assigment_list
+    2     | UPDATE . table SET assigment_list WHERE condition
+    3     | UPDATE . table SET assigment_list WHERE condition LEX_ERROR
+    4     | UPDATE . table SET assigment_list LEX_ERROR
+
+    ID  зсув, та перехід у стан 4
+
+    table  перехід у стан 5
+
+
+Стан 2
+
+    5 root: LEX_ERROR .
+
+    $default  вивід з використанням правила 5 (root)
+
+
+Стан 3
+
+    0 $accept: root . $end
+
+    $end  зсув, та перехід у стан 6
+
+
+Стан 4
+
+   29 table: ID .
+
+    $default  вивід з використанням правила 29 (table)
+
+
+Стан 5
+
+    1 root: UPDATE table . SET assigment_list
+    2     | UPDATE table . SET assigment_list WHERE condition
+    3     | UPDATE table . SET assigment_list WHERE condition LEX_ERROR
+    4     | UPDATE table . SET assigment_list LEX_ERROR
+
+    SET  зсув, та перехід у стан 7
+
+
+Стан 6
+
+    0 $accept: root $end .
+
+    $default  прийняти
+
+
+Стан 7
+
+    1 root: UPDATE table SET . assigment_list
+    2     | UPDATE table SET . assigment_list WHERE condition
+    3     | UPDATE table SET . assigment_list WHERE condition LEX_ERROR
+    4     | UPDATE table SET . assigment_list LEX_ERROR
+
+    ID  зсув, та перехід у стан 8
+
+    assigment       перехід у стан 9
+    assigment_list  перехід у стан 10
+    field_name      перехід у стан 11
+
+
+Стан 8
+
+   28 field_name: ID .
+
+    $default  вивід з використанням правила 28 (field_name)
+
+
+Стан 9
+
+    7 assigment_list: assigment .
+
+    $default  вивід з використанням правила 7 (assigment_list)
+
+
+Стан 10
+
+    1 root: UPDATE table SET assigment_list .
+    2     | UPDATE table SET assigment_list . WHERE condition
+    3     | UPDATE table SET assigment_list . WHERE condition LEX_ERROR
+    4     | UPDATE table SET assigment_list . LEX_ERROR
+    8 assigment_list: assigment_list . ',' assigment
+
+    WHERE      зсув, та перехід у стан 12
+    LEX_ERROR  зсув, та перехід у стан 13
+    ','        зсув, та перехід у стан 14
+
+    $default  вивід з використанням правила 1 (root)
+
+
+Стан 11
+
+    6 assigment: field_name . '=' value
+
+    '='  зсув, та перехід у стан 15
+
+
+Стан 12
+
+    2 root: UPDATE table SET assigment_list WHERE . condition
+    3     | UPDATE table SET assigment_list WHERE . condition LEX_ERROR
+
+    N_ULL    зсув, та перехід у стан 16
+    DEFAULT  зсув, та перехід у стан 17
+    NOT      зсув, та перехід у стан 18
+    STRING   зсув, та перехід у стан 19
+    NUMBER   зсув, та перехід у стан 20
+    ID       зсув, та перехід у стан 8
+    '('      зсув, та перехід у стан 21
+
+    value              перехід у стан 22
+    field_value        перехід у стан 23
+    number_expression  перехід у стан 24
+    number_factor      перехід у стан 25
+    condition          перехід у стан 26
+    condition_factor   перехід у стан 27
+    predicate          перехід у стан 28
+    field_name         перехід у стан 29
+
+
+Стан 13
+
+    4 root: UPDATE table SET assigment_list LEX_ERROR .
+
+    $default  вивід з використанням правила 4 (root)
+
+
+Стан 14
+
+    8 assigment_list: assigment_list ',' . assigment
+
+    ID  зсув, та перехід у стан 8
+
+    assigment   перехід у стан 30
+    field_name  перехід у стан 11
+
+
+Стан 15
+
+    6 assigment: field_name '=' . value
+
+    N_ULL    зсув, та перехід у стан 16
+    DEFAULT  зсув, та перехід у стан 17
+    STRING   зсув, та перехід у стан 19
+    NUMBER   зсув, та перехід у стан 20
+    '('      зсув, та перехід у стан 31
+
+    value              перехід у стан 32
+    number_expression  перехід у стан 24
+    number_factor      перехід у стан 25
+
+
+Стан 16
+
+   11 value: N_ULL .
+
+    $default  вивід з використанням правила 11 (value)
+
+
+Стан 17
+
+   12 value: DEFAULT .
+
+    $default  вивід з використанням правила 12 (value)
+
+
+Стан 18
+
+   24 condition_factor: NOT . predicate
+   26                 | NOT . predicate rel_operator condition
+
+    N_ULL    зсув, та перехід у стан 16
+    DEFAULT  зсув, та перехід у стан 17
+    STRING   зсув, та перехід у стан 19
+    NUMBER   зсув, та перехід у стан 20
+    ID       зсув, та перехід у стан 8
+    '('      зсув, та перехід у стан 31
+
+    value              перехід у стан 22
+    field_value        перехід у стан 23
+    number_expression  перехід у стан 24
+    number_factor      перехід у стан 25
+    predicate          перехід у стан 33
+    field_name         перехід у стан 29
+
+
+Стан 19
+
+    9 value: STRING .
+
+    $default  вивід з використанням правила 9 (value)
+
+
+Стан 20
+
+   17 number_factor: NUMBER .
+   18              | NUMBER . OPERATOR number_expression
+
+    OPERATOR  зсув, та перехід у стан 34
+
+    $default  вивід з використанням правила 17 (number_factor)
+
+
+Стан 21
+
+   16 number_expression: '(' . number_factor ')'
+   20 condition: '(' . condition_factor ')'
+
+    N_ULL    зсув, та перехід у стан 16
+    DEFAULT  зсув, та перехід у стан 17
+    NOT      зсув, та перехід у стан 18
+    STRING   зсув, та перехід у стан 19
+    NUMBER   зсув, та перехід у стан 20
+    ID       зсув, та перехід у стан 8
+    '('      зсув, та перехід у стан 31
+
+    value              перехід у стан 22
+    field_value        перехід у стан 23
+    number_expression  перехід у стан 24
+    number_factor      перехід у стан 35
+    condition_factor   перехід у стан 36
+    predicate          перехід у стан 28
+    field_name         перехід у стан 29
+
+
+Стан 22
+
+   13 field_value: value .
+
+    $default  вивід з використанням правила 13 (field_value)
+
+
+Стан 23
+
+   27 predicate: field_value . rel_set field_value
+
+    REL  зсув, та перехід у стан 37
+    '='  зсув, та перехід у стан 38
+
+    rel_set  перехід у стан 39
+
+
+Стан 24
+
+   10 value: number_expression .
+
+    $default  вивід з використанням правила 10 (value)
+
+
+Стан 25
+
+   15 number_expression: number_factor .
+
+    $default  вивід з використанням правила 15 (number_expression)
+
+
+Стан 26
+
+    2 root: UPDATE table SET assigment_list WHERE condition .
+    3     | UPDATE table SET assigment_list WHERE condition . LEX_ERROR
+
+    LEX_ERROR  зсув, та перехід у стан 40
+
+    $default  вивід з використанням правила 2 (root)
+
+
+Стан 27
+
+   19 condition: condition_factor .
+
+    $default  вивід з використанням правила 19 (condition)
+
+
+Стан 28
+
+   23 condition_factor: predicate .
+   25                 | predicate . rel_operator condition
+
+    AND  зсув, та перехід у стан 41
+    OR   зсув, та перехід у стан 42
+
+    $default  вивід з використанням правила 23 (condition_factor)
+
+    rel_operator  перехід у стан 43
+
+
+Стан 29
+
+   14 field_value: field_name .
+
+    $default  вивід з використанням правила 14 (field_value)
+
+
+Стан 30
+
+    8 assigment_list: assigment_list ',' assigment .
+
+    $default  вивід з використанням правила 8 (assigment_list)
+
+
+Стан 31
+
+   16 number_expression: '(' . number_factor ')'
+
+    NUMBER  зсув, та перехід у стан 20
+
+    number_factor  перехід у стан 44
+
+
+Стан 32
+
+    6 assigment: field_name '=' value .
+
+    $default  вивід з використанням правила 6 (assigment)
+
+
+Стан 33
+
+   24 condition_factor: NOT predicate .
+   26                 | NOT predicate . rel_operator condition
+
+    AND  зсув, та перехід у стан 41
+    OR   зсув, та перехід у стан 42
+
+    $default  вивід з використанням правила 24 (condition_factor)
+
+    rel_operator  перехід у стан 45
+
+
+Стан 34
+
+   18 number_factor: NUMBER OPERATOR . number_expression
+
+    NUMBER  зсув, та перехід у стан 20
+    '('     зсув, та перехід у стан 31
+
+    number_expression  перехід у стан 46
+    number_factor      перехід у стан 25
+
+
+Стан 35
+
+   15 number_expression: number_factor .
+   16                  | '(' number_factor . ')'
+
+    ')'  зсув, та перехід у стан 47
+
+    $default  вивід з використанням правила 15 (number_expression)
+
+
+Стан 36
+
+   20 condition: '(' condition_factor . ')'
+
+    ')'  зсув, та перехід у стан 48
+
+
+Стан 37
+
+   21 rel_set: REL .
+
+    $default  вивід з використанням правила 21 (rel_set)
+
+
+Стан 38
+
+   22 rel_set: '=' .
+
+    $default  вивід з використанням правила 22 (rel_set)
+
+
+Стан 39
+
+   27 predicate: field_value rel_set . field_value
+
+    N_ULL    зсув, та перехід у стан 16
+    DEFAULT  зсув, та перехід у стан 17
+    STRING   зсув, та перехід у стан 19
+    NUMBER   зсув, та перехід у стан 20
+    ID       зсув, та перехід у стан 8
+    '('      зсув, та перехід у стан 31
+
+    value              перехід у стан 22
+    field_value        перехід у стан 49
+    number_expression  перехід у стан 24
+    number_factor      перехід у стан 25
+    field_name         перехід у стан 29
+
+
+Стан 40
+
+    3 root: UPDATE table SET assigment_list WHERE condition LEX_ERROR .
+
+    $default  вивід з використанням правила 3 (root)
+
+
+Стан 41
+
+   30 rel_operator: AND .
+
+    $default  вивід з використанням правила 30 (rel_operator)
+
+
+Стан 42
+
+   31 rel_operator: OR .
+
+    $default  вивід з використанням правила 31 (rel_operator)
+
+
+Стан 43
+
+   25 condition_factor: predicate rel_operator . condition
+
+    N_ULL    зсув, та перехід у стан 16
+    DEFAULT  зсув, та перехід у стан 17
+    NOT      зсув, та перехід у стан 18
+    STRING   зсув, та перехід у стан 19
+    NUMBER   зсув, та перехід у стан 20
+    ID       зсув, та перехід у стан 8
+    '('      зсув, та перехід у стан 21
+
+    value              перехід у стан 22
+    field_value        перехід у стан 23
+    number_expression  перехід у стан 24
+    number_factor      перехід у стан 25
+    condition          перехід у стан 50
+    condition_factor   перехід у стан 27
+    predicate          перехід у стан 28
+    field_name         перехід у стан 29
+
+
+Стан 44
+
+   16 number_expression: '(' number_factor . ')'
+
+    ')'  зсув, та перехід у стан 47
+
+
+Стан 45
+
+   26 condition_factor: NOT predicate rel_operator . condition
+
+    N_ULL    зсув, та перехід у стан 16
+    DEFAULT  зсув, та перехід у стан 17
+    NOT      зсув, та перехід у стан 18
+    STRING   зсув, та перехід у стан 19
+    NUMBER   зсув, та перехід у стан 20
+    ID       зсув, та перехід у стан 8
+    '('      зсув, та перехід у стан 21
+
+    value              перехід у стан 22
+    field_value        перехід у стан 23
+    number_expression  перехід у стан 24
+    number_factor      перехід у стан 25
+    condition          перехід у стан 51
+    condition_factor   перехід у стан 27
+    predicate          перехід у стан 28
+    field_name         перехід у стан 29
+
+
+Стан 46
+
+   18 number_factor: NUMBER OPERATOR number_expression .
+
+    $default  вивід з використанням правила 18 (number_factor)
+
+
+Стан 47
+
+   16 number_expression: '(' number_factor ')' .
+
+    $default  вивід з використанням правила 16 (number_expression)
+
+
+Стан 48
+
+   20 condition: '(' condition_factor ')' .
+
+    $default  вивід з використанням правила 20 (condition)
+
+
+Стан 49
+
+   27 predicate: field_value rel_set field_value .
+
+    $default  вивід з використанням правила 27 (predicate)
+
+
+Стан 50
+
+   25 condition_factor: predicate rel_operator condition .
+
+    $default  вивід з використанням правила 25 (condition_factor)
+
+
+Стан 51
+
+   26 condition_factor: NOT predicate rel_operator condition .
+
+    $default  вивід з використанням правила 26 (condition_factor)

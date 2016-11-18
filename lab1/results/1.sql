@@ -1,0 +1,8 @@
+update ID 
+set ID = NUMBER , 
+ID = NUMBER OPERATOR NUMBER , 
+ID = STRING , 
+ID = STRING 
+where ID = NUMBER 
+and ID REL NUMBER 
+and ID = STRING 
