@@ -525,6 +525,12 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "lexer.l"
+/*
+  Лексический анализатор отслеживает следующие типы ошибок:
+    - Строковые константы с незакрытой кавычкой
+    - Неизвестные токены
+    - Незакрытые скобки	
+*/
 /*Дополнительные опции:
   yylineno - включает переменную yylineno в которую записывается текущая строчка
   caseless - парсинг без учета регистра */
@@ -532,19 +538,32 @@ char *yytext;
 /*Регулярное выражение для распознавания строковых констант*/
 /*Перевод на новую строку*/
 /*Разделители*/
-#line 19 "lexer.l"
+/*Индентификаторы. правило 13 в задании */
+/*Знаки препинания. Правило 19*/
+/*Число. Правило 16*/
+/*Числовой оператор. Правило 6*/
+/*Оператор сравнения. Правило 11. Тут исключен символ равенства, поскольку
+  он используется в правиле №2 и может быть как оператором сравнения так и оператором присваивания
+  поэтому равно отправляем как есть в выходной поток. Синтаксический анализатор будет разбираться   
+*/
+#line 33 "lexer.l"
   #include <stdarg.h>
+  /*Константы для того, чтобы можно было писать красным цветом в консоле*/
   #define KRED  "\x1B[31m"	
   #define KNRM  "\x1B[0m"
+  /*Переменная для подсчета количества открытых */
   int brackets_count = 0; 
+  /*Функция для вывода сообщения об ошибке. Поддерживает форматированный ввод как printf*/
   void show_error(char *msg, ...){
+	//Макросы для обработки переменного числа аргументов   
 	va_list arg;
 	va_start(arg, msg);
+	//Выводим сообщение в stderr, с указанием номе
 	fprintf(stderr, "%sLex Error in line %d. %s", KRED, yylineno, KNRM);
 	vfprintf(stderr, msg, arg);  
 	fprintf(stderr, "\n");
   }
-#line 548 "lex.yy.c"
+#line 567 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -762,9 +781,9 @@ YY_DECL
 		}
 
 	{
-#line 31 "lexer.l"
+#line 50 "lexer.l"
 
-#line 768 "lex.yy.c"
+#line 787 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -834,64 +853,67 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 32 "lexer.l"
+#line 51 "lexer.l"
 printf("\n");
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 33 "lexer.l"
+#line 52 "lexer.l"
 printf("STRING ");
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 34 "lexer.l"
+#line 53 "lexer.l"
 printf("%s ", yytext);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 35 "lexer.l"
+#line 54 "lexer.l"
 printf("NUMBER ");
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 36 "lexer.l"
+#line 55 "lexer.l"
 printf("ID ");
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 37 "lexer.l"
+#line 56 "lexer.l"
 printf("OPERATOR ");
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 38 "lexer.l"
+#line 57 "lexer.l"
 printf("REL ");
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 39 "lexer.l"
+#line 58 "lexer.l"
 ;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 40 "lexer.l"
+#line 59 "lexer.l"
 ;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 41 "lexer.l"
+#line 60 "lexer.l"
 printf(", ");
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 42 "lexer.l"
+#line 61 "lexer.l"
 printf("= ");
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 43 "lexer.l"
+#line 62 "lexer.l"
 {
+//Для скобок проверяем соответствие открытых и закрытых скобок: каждый раз, когда */
+// встречаем открытую скобку увеличиваем счетчик открытых скобок*/
+// а когда встречаем закрытую, уменьшаем. Поднимаем ошибку если число открытых скобок меньше 0*/
 	              --brackets_count;
 				  if (brackets_count < 0)				  
 					  show_error("Unclosed bracket");			  
@@ -901,29 +923,29 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 50 "lexer.l"
+#line 72 "lexer.l"
 {
 					printf("( ");
 					++brackets_count;
-				}
+				}			
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 54 "lexer.l"
-show_error("Unterminated string constant %s", yytext);
+#line 76 "lexer.l"
+show_error("Unterminated string constant %s", yytext); //Регулярное выражение для незакрытой кавычки
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 55 "lexer.l"
-show_error("Unrecognized token %s", yytext);
+#line 77 "lexer.l"
+show_error("Unrecognized token %s", yytext); //Прочие символы и токены считаем недопустимыми
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 57 "lexer.l"
+#line 79 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 927 "lex.yy.c"
+#line 949 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1936,16 +1958,19 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 57 "lexer.l"
+#line 79 "lexer.l"
 
 
+/*Своя реализация функции main, чтобы иметь возможность читать данные из входного файла, имя кооторого передается как параметр*/
 int main(int argc, char* argv[]) {
   ++argv, --argc;  /* skip over program name */
+  /*Если есть параметры командной строки*/
   if ( argc > 0 )
+	/*Перенаправляем входной поток на файл с именем который задан в первом параметре*/  
     yyin = fopen( argv[0], "r" );
   else
     yyin = stdin;
-
+  /*Выполняем парсинг*/
   yylex();
 }
 

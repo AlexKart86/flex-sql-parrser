@@ -60,6 +60,9 @@ REL_OPERATOR (<>|<|>|<=|>=)
 ,				printf(", ");
 =				printf("= ");
 \)				{
+//Для скобок проверяем соответствие открытых и закрытых скобок: каждый раз, когда */
+// встречаем открытую скобку увеличиваем счетчик открытых скобок*/
+// а когда встречаем закрытую, уменьшаем. Поднимаем ошибку если число открытых скобок меньше 0*/
 	              --brackets_count;
 				  if (brackets_count < 0)				  
 					  show_error("Unclosed bracket");			  
@@ -69,17 +72,20 @@ REL_OPERATOR (<>|<|>|<=|>=)
 \(				{
 					printf("( ");
 					++brackets_count;
-				}
-\"[^\"]*		show_error("Unterminated string constant %s", yytext);
-. 				show_error("Unrecognized token %s", yytext);
+				}			
+\"[^\"]*		show_error("Unterminated string constant %s", yytext); //Регулярное выражение для незакрытой кавычки
+. 				show_error("Unrecognized token %s", yytext); //Прочие символы и токены считаем недопустимыми
 				
 %%
+/*Своя реализация функции main, чтобы иметь возможность читать данные из входного файла, имя кооторого передается как параметр*/
 int main(int argc, char* argv[]) {
   ++argv, --argc;  /* skip over program name */
+  /*Если есть параметры командной строки*/
   if ( argc > 0 )
+	/*Перенаправляем входной поток на файл с именем который задан в первом параметре*/  
     yyin = fopen( argv[0], "r" );
   else
     yyin = stdin;
-
+  /*Выполняем парсинг*/
   yylex();
 }

@@ -62,13 +62,14 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 3 "parser.y" /* yacc.c:339  */
+#line 9 "parser.y" /* yacc.c:339  */
 
+/*Константы чтобы писать цветом в консоль*/	
 #define KRED  "\x1B[31m"	
 #define KNRM  "\x1B[0m"  
 #define KGRN  "\x1B[32m"	
 
-#line 72 "parser.tab.c" /* yacc.c:339  */
+#line 73 "parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -136,7 +137,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 140 "parser.tab.c" /* yacc.c:358  */
+#line 141 "parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -435,10 +436,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    10,    10,    11,    12,    14,    16,    19,    20,    21,
-      22,    23,    24,    25,    26,    26,    27,    28,    29,    30,
-      31,    32,    33,    34,    36,    37,    38,    39,    40,    41,
-      42,    46,    47
+       0,    21,    21,    22,    23,    25,    27,    31,    33,    34,
+      36,    37,    38,    39,    41,    41,    43,    44,    46,    47,
+      49,    50,    53,    54,    56,    57,    58,    59,    61,    62,
+      63,    67,    68
 };
 #endif
 
@@ -1243,29 +1244,29 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 12 "parser.y" /* yacc.c:1646  */
+#line 23 "parser.y" /* yacc.c:1646  */
     {yyerror("Analyze interrupted because of lex parser error");
 	             YYERROR; }
-#line 1250 "parser.tab.c" /* yacc.c:1646  */
+#line 1251 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 14 "parser.y" /* yacc.c:1646  */
+#line 25 "parser.y" /* yacc.c:1646  */
     {yyerror("Analyze interrupted because of lex parser error");
 	             YYERROR; }
-#line 1257 "parser.tab.c" /* yacc.c:1646  */
+#line 1258 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 16 "parser.y" /* yacc.c:1646  */
+#line 27 "parser.y" /* yacc.c:1646  */
     {yyerror("Analyze interrupted because of lex parser error");
 	             YYERROR;
 				  }
-#line 1265 "parser.tab.c" /* yacc.c:1646  */
+#line 1266 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1269 "parser.tab.c" /* yacc.c:1646  */
+#line 1270 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1493,16 +1494,17 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 48 "parser.y" /* yacc.c:1906  */
+#line 69 "parser.y" /* yacc.c:1906  */
 
 #include <stdio.h>
 #include <stdarg.h>
 extern int yylineno;
 extern char *yytext;
 extern FILE *yyin;
-
+//Макрос, который печатает ход разбора в процессе отладки
 #define YYPRINT(file, type, value) fprintf(file, "%d", value);
 
+//Процедура вывода сообщения об ошибке
 void yyerror(char* msg){
  printf("%sSyntax error line %d: %s %s. Token: '%s'\n", KRED, yylineno, KNRM, msg, yytext);
 }
@@ -1517,10 +1519,10 @@ int main(int argc, char* argv[]) {
     yyin = fopen( argv[0], "r" );
   else
     yyin = stdin;
-  // parse through the input until there is no more:
+  //Вызываем основную процедуру разбора, она вернет 0 если разбор удачный 
   int res = yyparse();
   if (!res){
-	  printf("Analyze successfull\n");
+	  printf("%sAnalyze successfull%s\n", KGRN, KNRM);
   }
   return res;
 }
